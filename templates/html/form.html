@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ currency }} Exchange</title>
+    <style>
+        div {
+            width: 50%; /* set the width of the div */
+            margin: 0 auto; /* center the div horizontally */
+            text-align: center; /* center the text inside the div */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>{{ currency }} Exchange</h1>
+        <form method="post">
+            <input type="hidden" name="currencys" value="{{currency}}">
+            <input type="text" name="value">
+            <input type="submit" value="Submit">
+            <h1>Total is {{total}} IDR</h1>
+        </form>
+        <br>
+        <a href="{{ url_for('home') }}"><button>Back</button></a>
+    </div>
+    <footer>
+        Copyright &copy; 2023 by Go Dave Malvin
+    </footer>
+</body>
+</html>
