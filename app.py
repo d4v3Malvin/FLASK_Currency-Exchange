@@ -1,10 +1,75 @@
 import os
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, redirect, session
 import psycopg2
 
 app = Flask(__name__, static_folder='static')
 
+#DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def connectdb():
+    conn = psycopg2.connect(
+    #instance ip address
+    host="34.101.33.6",
+    database="test-db",
+    user="postgres",
+    password="rMON}e7*I@Jo4B\-",
+    port="5432")
+    return conn
+
+conn = connectdb()
+
+cur = conn.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS users (" + 
+            "user_id serial PRIMARY KEY," + 
+            "username VARCHAR(50) NOT NULL, " + 
+            "password VARCHAR(50) NOT NULL" + 
+            ");")
+conn.commit()
+cur.close()
+conn.close()
+
 @app.route("/")
+def index():
+    return render_template("html/index.html")
+
+@app.route('/login', methods=["GET","POST"])
+def login():
+    if request.method == "POST":
+        redirect('/home')
+    return render_template("html/login.html")
+
+@app.route('/register',  methods=["GET","POST"])
+def register():
+    if request.method == "POST":
+        # conn = connectdb()
+        # cur = conn.cursor()
+        # cur.execute("SELECT * FROM USERS")
+        # rows = cur.fetchall()
+        # for row in rows:
+        #     print(row)
+        # cur.close()
+        # conn.close()
+        username = request.form["username"]
+        password = request.form["password"]
+        confirm_password = request.form["confirm_password"]
+        if password == confirm_password : 
+            conn = connectdb()
+            cur = conn.cursor()
+            query = "INSERT INTO users values (%s,%s,%s)"
+            data = (0,username,password)
+            try:
+                cur.execute(query,data)
+                conn.commit()
+            except (Exception, psycopg2.Error) as error:
+                print(error)
+            finally:
+                if (conn):
+                    cur.close()
+                    conn.close()
+                redirect('/home')
+    return render_template("/html/register.html")
+
+@app.route('/home')
 def home():
     return render_template("html/home.html")
 
